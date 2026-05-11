@@ -684,7 +684,7 @@ de memoria funcionó correctamente.
 
 ## Conclusiones
 
-### Desafío EUFI y Coreboot
+### Desafío UEFI y Coreboot
 
 La complejidad de UEFI e Intel CSME evidencia que la industria actual prioriza sumar funciones por sobre la seguridad, dejando los equipos expuestos a ataques de bajo nivel. Coreboot nos demuestra que la mejor alternativa es la simplicidad: inicializar solo lo indispensable y pasarle el mando rápido al sistema operativo. En definitiva, adoptar un firmware de código abierto es clave para recuperar el control real de nuestro hardware.
 
