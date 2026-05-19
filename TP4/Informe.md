@@ -87,7 +87,7 @@ sudo dmesg | tail
 
 Obteniendo:
 
-["Carga del módulo mimodulo.ko exitosa."]!images/carga-modulo.png
+!["Carga del módulo mimodulo.ko exitosa."](images/carga-modulo.png)
 
 Esto indica que el módulo fue cargado correctamente y que la función de inicialización del módulo se ejecutó exitosamente.
 
@@ -142,18 +142,10 @@ modinfo mimodulo.ko
 
 Obteniendo:
 
-```text
-filename:       /home/martina/Electrotonto-y-Computarados/TP4/kenel-modules/part1/module/mimodulo.ko
-author:         Catedra de SdeC
-description:    Primer modulo ejemplo
-license:        GPL
-name:           mimodulo
-vermagic:       6.8.0-48-generic SMP preempt mod_unload modversions
-```
+![Información del módulo mimodulo.ko obtenida con modinfo.](images/modinfo.png)
 
 El campo `vermagic` resulta especialmente importante, ya que indica la versión del kernel con la cual el módulo fue compilado. Si el módulo se compila utilizando headers incompatibles, el kernel puede rechazar su carga.
 
-[Información del módulo mimodulo.ko obtenida con modinfo.]!images/modinfo.png
 ---
 
 # Comparación con un módulo real del sistema
@@ -178,13 +170,7 @@ modinfo /lib/modules/6.8.0-48-generic/misc/vboxvideo.ko
 
 Resultado parcial:
 
-```text
-description: Oracle VM VirtualBox Graphics Card
-author: Oracle and/or its affiliates
-depends: ttm,drm_ttm_helper
-name: vboxvideo
-vermagic: 6.8.0-48-generic SMP preempt mod_unload modversions
-```
+![Información del módulo vboxvideo.ko obtenida con modinfo.](images/vboxvideo-modinfo.png)
 
 A diferencia de nuestro módulo simple, este módulo posee:
 
@@ -221,6 +207,7 @@ Modulo descargado del kernel.
 
 Esto permitió observar cómo un error dentro de un módulo afecta directamente al kernel, ya que los módulos se ejecutan en espacio privilegiado y no poseen el aislamiento de memoria que tienen los programas normales de usuario.
 
+![Mensaje de error del kernel al descargar el módulo mimodulo.](images/error-rmmod.png)
 ---
 
 # Diferencia entre un programa y un módulo
@@ -305,7 +292,7 @@ Ejemplos:
 
 Los drivers del kernel son los encargados de gestionar estos dispositivos y exponer interfaces accesibles desde espacio de usuario.
 
-[Contenido del directorio /dev.]!images/dev.png
+![Contenido del directorio /dev.](images/dev.png)
 ---
 
 # Información de dispositivos del sistema
@@ -332,7 +319,7 @@ Esto permitió observar:
 * puntos de montaje
 * dispositivos virtuales utilizados por VirtualBox
 
-[Información de dispositivos del sistema obtenida con lsblk.]!images/lsblk.png
+![Información de dispositivos del sistema obtenida con lsblk.](images/lsblk.png)
 ---
 
 # Secure Boot y EFI en la máquina virtual
@@ -370,6 +357,8 @@ Por este motivo:
 * el kernel permitió cargar módulos sin firma digital
 
 Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firma de módulos del kernel.
+
+![Mensaje de error al intentar verificar el estado de Secure Boot.](images/secureboot.png)
 
 ---
 
