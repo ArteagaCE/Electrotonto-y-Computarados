@@ -209,6 +209,28 @@ Esto permitió observar cómo un error dentro de un módulo afecta directamente 
 
 ![Mensaje de error del kernel al descargar el módulo mimodulo.](images/error-rmmod.png)
 ---
+# Diferencia en los drivers/modulos cargados en las PC de los integrantes
+
+### Drivers de cada integrante
+[Drivers de Marcos](./Drivers%20de%20los%20integrantes/drivers_marcos.txt)
+
+
+### Modulos no cargados en el kernel pero disponibles de cada integrante
+
+[Modulos disponibles pero no cargados marcos](./Modulos%20disponibles%20de%20los%20integrantes/modulos_disponibles_marcos.txt)
+
+
+### Que pasa cuando un driver del dispositivo no está disponible?
+
+- Cuando el driver de un dispositivo no está disponible, el sistema operativo no puede controlar correctamente ese hardware. El dispositivo puede ser detectado físicamente, pero no podrá ser utilizado o funcionará de manera limitada mediante un controlador genérico. Esto ocurre porque el driver es el componente que permite al kernel comunicarse con el dispositivo, traduciendo las operaciones del sistema en instrucciones específicas para ese hardware. En Linux, muchos drivers se cargan como módulos del kernel; si el módulo correspondiente no está disponible, no puede cargarse y el dispositivo queda sin soporte funcional.
+
+Ej: Si falta el módulo/driver de una placa Wi-Fi, el sistema puede reconocer que hay un adaptador conectado, pero no va a crear una interfaz inalámbrica utilizable como wlan0 o wlpXsY.
+
+# Ejecución de hwinfo en hardware real
+
+Se ejecutó `hwinfo` sobre una PC real y se guardó la salida en el siguiente archivo:
+
+[Ver información de hardware del equipo](./hwinfo_out.txt)
 
 # Diferencia entre un programa y un módulo
 

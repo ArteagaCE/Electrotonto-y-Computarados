@@ -1,0 +1,89 @@
+cpu:
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1796 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1666 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1400 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1796 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 4042 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 4041 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1796 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1700 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 2207 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 4033 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1400 MHz
+                       AMD Ryzen 5 5500U with Radeon Graphics, 1400 MHz
+keyboard:
+  /dev/input/event4    SIN Mechanical Keyboard
+  /dev/input/event2    AT Translated Set 2 keyboard
+mouse:
+  /dev/input/mice      Logitech G203 LIGHTSYNC Gaming Mouse
+  /dev/input/mice      ELAN071A:00 04F3:30FD Mouse
+  /dev/input/mice      ELAN071A:00 04F3:30FD Touchpad
+monitor:
+                       HDMI
+                       LCD Monitor
+graphics card:
+                       ATI Lucienne
+sound:
+                       ATI Audio device
+                       AMD Family 17h (Models 10h-1fh) HD Audio Controller
+storage:
+                       Floppy disk controller
+                       Kingston Technology Company Non-Volatile memory controller
+network:
+  wlo1                 Realtek RTL8821CE 802.11ac PCIe Wireless Network Adapter
+network interface:
+  lo                   Loopback network interface
+  docker0              Ethernet network interface
+  wlo1                 Ethernet network interface
+disk:
+  /dev/nvme0n1         Kingston Technology Company Disk
+partition:
+  /dev/nvme0n1p1       Partition
+  /dev/nvme0n1p2       Partition
+  /dev/nvme0n1p3       Partition
+  /dev/nvme0n1p4       Partition
+  /dev/nvme0n1p5       Partition
+usb controller:
+                       AMD Renoir USB 3.1
+                       AMD Renoir USB 3.1
+bios:
+                       BIOS
+bridge:
+                       AMD Renoir PCIe Dummy Host Bridge
+                       AMD Renoir Device 24: Function 3
+                       AMD Renoir Device 24: Function 1
+                       AMD Renoir PCIe Dummy Host Bridge
+                       AMD FCH LPC Bridge
+                       AMD Renoir Device 24: Function 6
+                       AMD Renoir Root Complex
+                       AMD Renoir Internal PCIe GPP Bridge to Bus
+                       AMD Renoir Device 24: Function 4
+                       AMD Renoir Device 24: Function 2
+                       AMD Renoir PCIe GPP Bridge
+                       AMD Renoir Device 24: Function 0
+                       AMD Renoir PCIe GPP Bridge
+                       AMD Renoir PCIe Dummy Host Bridge
+                       AMD Renoir Device 24: Function 7
+                       AMD Renoir Device 24: Function 5
+hub:
+                       Linux Foundation 2.0 root hub
+                       Linux Foundation 3.0 root hub
+                       Linux Foundation 2.0 root hub
+                       Linux Foundation 3.0 root hub
+memory:
+                       Main Memory
+bluetooth:
+                       Realtek Bluetooth Radio
+unknown:
+                       FPU
+                       DMA controller
+                       PIC
+                       Keyboard controller
+                       PS/2 Controller
+                       AMD Raven/Raven2/FireFlight/Renoir Audio Processor
+                       AMD Renoir IOMMU
+                       AMD Family 17h (Models 10h-1fh) Platform Security Processor
+                       AMD FCH SMBus Controller
+  /dev/input/event7    Logitech G203 LIGHTSYNC Gaming Mouse
+                       Chicony Electronics HP TrueVision HD Camera
+  /dev/input/event5    SIN Mechanical Keyboard
