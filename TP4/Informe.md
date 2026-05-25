@@ -1,7 +1,9 @@
 # TP4: Módulos de Kernel y Llamadas al Sistema
 
 **Materia:** Sistemas de Computación
+
 **Grupo:** Electrotonto y Computarados
+
 **Integrantes:**
 
 * Martina Juri
@@ -323,83 +325,7 @@ El kernel trabaja en conjunto con el hardware del procesador, específicamente c
 
 ---
 
-# 8.9.10.
-## Espacio de usuario y espacio del kernel
-### Espacio de usuario
-
-Es el entorno donde se ejecutan aplicaciones comunes. Los programas no poseen acceso directo al hardware y deben interactuar con el kernel mediante llamadas al sistema.
-
-### Espacio del kernel
-
-Es el entorno donde se ejecuta el núcleo del sistema operativo y los módulos cargados. Posee acceso completo al hardware y a toda la memoria del sistema.
-
-Todos los módulos comparten el mismo espacio de memoria del kernel, por lo que un error puede afectar a todo el sistema operativo.
-
-## Drivers y contenido de /dev
-
-Se exploró el contenido del directorio `/dev` mediante:
-
-```bash
-ls /dev | head
-```
-
-Resultado:
-
-```text
-autofs
-block
-bsg
-btrfs-control
-bus
-cdrom
-char
-console
-core
-cpu
-```
-
-El directorio `/dev` contiene archivos especiales que representan dispositivos físicos y virtuales del sistema.
-
-En Linux, muchos dispositivos se acceden como si fueran archivos.
-
-Ejemplos:
-
-* `/dev/sda` → disco rígido
-* `/dev/cdrom` → lectora
-* `/dev/null` → dispositivo virtual
-* `/dev/random` → generador aleatorio
-
-Los drivers del kernel son los encargados de gestionar estos dispositivos y exponer interfaces accesibles desde espacio de usuario.
-
-![Contenido del directorio /dev.](images/dev.png)
----
-### Información de dispositivos del sistema
-
-También se utilizó:
-
-```bash
-lsblk
-```
-
-Resultado parcial:
-
-```text
-sda      79,4G
-├─sda1      1M
-├─sda2    513M /boot/efi
-└─sda3   78,9G /
-```
-
-Esto permitió observar:
-
-* discos detectados
-* particiones
-* puntos de montaje
-* dispositivos virtuales utilizados por VirtualBox
-
-![Información de dispositivos del sistema obtenida con lsblk.](images/lsblk.png)
-
-# Secure Boot y EFI en la máquina virtual
+# 8. Secure Boot y EFI en la máquina virtual
 
 Se intentó verificar el estado de Secure Boot mediante:
 
@@ -437,6 +363,22 @@ Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firm
 
 ![Mensaje de error al intentar verificar el estado de Secure Boot.](images/secureboot.png)
 
+# 10. ¿Qué pasa si mi compañero con Secure Boot habilitado intenta cargar un módulo firmado por mí?
+
+El kernel de la otra máquina rechazará el módulo y arrojará un error de "Operación no permitida" o "Clave requerida no disponible". 
+
+Esto sucede porque la cadena de confianza de Secure Boot verifica la firma del módulo contra la base de datos de claves almacenadas en la NVRAM de la placa base (específicamente en la lista MOK - *Machine Owner Key*). Como el módulo fue firmado utilizando una clave privada autogenerada en una computadora distinta, la otra computadora no posee la clave pública correspondiente instalada en su firmware para validar esa firma. Para que el kernel lo acepte, se debería importar e inscribir manualmente la clave pública (generada por el autor del módulo) en el MOK de la otra UEFI.
+
+# 11. Análisis del artículo de ArsTechnica sobre Secure Boot
+
+**a. ¿Cuál fue la consecuencia principal del parche de Microsoft sobre GRUB en sistemas con arranque dual?** 
+La consecuencia principal fue que el parche (diseñado para revocar certificados antiguos y vulnerables) invalidó la firma digital de ciertos gestores de arranque de Linux (GRUB). Esto provocó que los usuarios con configuraciones de arranque dual (Windows y Linux) se encontraran con mensajes de error de políticas de seguridad al encender la PC, impidiéndoles cargar su sistema operativo Linux por completo.
+
+**b. ¿Qué implicancia tiene desactivar Secure Boot como solución al problema descrito en el artículo?**. Desactivar Secure Boot desde la BIOS/UEFI soluciona temporalmente el problema de arranque porque elimina la etapa de verificación de firmas digitales. Sin embargo, la implicancia de esta acción es que perjudica la seguridad de toda la computadora (afectando también a Windows), dejando al equipo vulnerable a ataques de bajo nivel, como *bootkits* y *rootkits* que podrían inyectarse antes de que el sistema operativo y el antivirus se inicien.
+
+**c. ¿Cuál es el propósito principal del Secure Boot en el proceso de arranque de un sistema?**. El propósito fundamental de Secure Boot es establecer una "cadena de confianza" desde el instante en que se enciende el hardware. Su objetivo es asegurar que cada componente crítico del proceso de inicio (el firmware, el gestor de arranque, el kernel del sistema operativo y sus controladores) provenga de una fuente confiable y no haya sido alterado, validando criptográficamente la firma de cada fragmento de código antes de permitir su ejecución.
+
+
 ---
 # Desafío 1:
 ## ¿Qué es checkinstall y para qué sirve?
@@ -467,12 +409,20 @@ Para cumplir con este desafío, se creó un programa básico en C ([hola.c](hola
 
 ![Creación exitosa del paquete con checkinstall](images/hola_mundo_empaquetado.png)
 
-## Acciones para impulasar la seguridad del kernel evitando cargar módulos que no estén firmados .rootkits
+## Acciones para impulasar la seguridad del kernel evitando cargar módulos que no estén firmados (rootkits).
+Un *rootkit* es un tipo de software malicioso diseñado para obtener acceso de administrador (root) en un sistema y ocultar su propia existencia. Los rootkits de nivel de kernel son los más peligrosos, ya que operan con los máximos privilegios del sistema operativo, permitiéndoles interceptar llamadas al sistema, ocultar procesos y evadir antivirus tradicionales.
+
+Para mejorar la seguridad del kernel y evitar este tipo de vulnerabilidades, se implementa la firma digital de módulos. Cuando esta política (generalmente respaldada por Secure Boot) está activa, el kernel de Linux se niega a cargar cualquier archivo `.ko` (módulo) que no posea una firma criptográfica válida o cuya firma no provenga de una Autoridad Certificadora (CA) o clave (MOK) pre-aprobada en el firmware de la placa base. Esto asegura que solo el código legítimo y confiable pueda extender las funcionalidades del núcleo, impidiendo que un atacante cargue un rootkit empaquetado como un módulo falso.
+
 
 ---
 # Desafío 2
 
 ## ¿Qué funcionalidades tiene diponibles un programa y un módulo?
+Existe una limitación respecto a qué funciones puede invocar el código dependiendo de dónde se ejecute:
+
+* **Programas (Espacio de usuario):** Tienen a su disposición toda la biblioteca estándar de C (`libc`) y otras bibliotecas de nivel superior. Utilizan funciones como `printf`, `malloc` o `fopen`, las cuales actúan como envoltorios (wrappers) que luego realizan llamadas al sistema seguras hacia el kernel.
+* **Módulos (Espacio del kernel):** Al formar parte del núcleo del sistema operativo, no tienen acceso a las bibliotecas del espacio de usuario. Deben utilizar exclusivamente las funciones internas que el propio kernel exporta explícitamente para su uso. Por ejemplo, en lugar de `printf` usan `printk`, y en lugar de `malloc` usan `kmalloc`.
 
 ## Espacio de usuario y espacio del kernel
 ### Espacio de usuario
@@ -485,7 +435,11 @@ Es el entorno donde se ejecuta el núcleo del sistema operativo y los módulos c
 
 Todos los módulos comparten el mismo espacio de memoria del kernel, por lo que un error puede afectar a todo el sistema operativo.
 
-## Espacio de datos
+## Espacio de Datos
+El manejo de la memoria es radicalmente distinto entre ambos conceptos:
+* **Espacio de Usuario:** Cada programa cuenta con su propio espacio de memoria virtual aislado. Si un programa comete un error crítico (como un puntero nulo), el kernel interviene, termina el proceso (Segmentation Fault) y el resto del sistema sigue funcionando con normalidad.
+
+* **Espacio de Kernel:** Todos los módulos cargados comparten el mismo espacio de direcciones de memoria continuo y sin restricciones. Debido a esto, un error de programación en un módulo (como un puntero salvaje) corrompe la memoria vital del sistema operativo, lo que resulta en un fallo general del sistema (*Kernel Panic*) que obliga a reiniciar la computadora.
 
 ## Drivers y contenido de /dev
 
@@ -551,6 +505,7 @@ Esto permitió observar:
 
 ![Información de dispositivos del sistema obtenida con lsblk.](images/lsblk.png)
 
+
 ---
 # Conclusión
 
@@ -574,3 +529,4 @@ También se analizaron herramientas importantes del sistema como:
 Además, se investigó el rol de Secure Boot y la importancia de las firmas digitales en módulos del kernel para prevenir la carga de código malicioso o rootkits.
 
 Aunque la máquina virtual utilizada no contaba con soporte EFI ni Secure Boot habilitado, la experiencia permitió comprender el funcionamiento general de estos mecanismos de seguridad y su importancia en sistemas modernos.
+
