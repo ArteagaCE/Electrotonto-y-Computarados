@@ -1,0 +1,106 @@
+Module                  Size  Used by
+isofs                  61440  1
+nf_conntrack_netlink    57344  0
+xt_nat                 12288  44
+xt_tcpudp              16384  0
+veth                   45056  0
+xt_conntrack           12288  2
+xt_MASQUERADE          16384  2
+bridge                421888  0
+stp                    12288  1 bridge
+llc                    16384  2 bridge,stp
+xfrm_user              61440  1
+xfrm_algo              16384  1 xfrm_user
+xt_set                 20480  0
+ip_set                 61440  1 xt_set
+nft_chain_nat          12288  23
+nf_nat                 61440  3 xt_nat,nft_chain_nat,xt_MASQUERADE
+nf_conntrack          196608  5 xt_conntrack,nf_nat,xt_nat,nf_conntrack_netlink,xt_MASQUERADE
+nf_defrag_ipv6         24576  1 nf_conntrack
+nf_defrag_ipv4         12288  1 nf_conntrack
+xt_addrtype            12288  4
+nft_compat             20480  52
+nf_tables             372736  622 nft_compat,nft_chain_nat
+snd_seq_dummy          12288  0
+snd_hrtimer            12288  1
+vxlan                 155648  0
+ip6_udp_tunnel         16384  1 vxlan
+udp_tunnel             32768  1 vxlan
+overlay               212992  9
+qrtr                   53248  2
+binfmt_misc            24576  1
+zfs                  6598656  6
+spl                   180224  1 zfs
+nls_iso8859_1          12288  1
+snd_intel8x0           53248  1
+snd_ac97_codec        196608  1 snd_intel8x0
+ac97_bus               12288  1 snd_ac97_codec
+snd_pcm               192512  2 snd_intel8x0,snd_ac97_codec
+snd_seq_midi           24576  0
+snd_seq_midi_event     16384  1 snd_seq_midi
+snd_rawmidi            57344  1 snd_seq_midi
+snd_seq               114688  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
+vmwgfx                438272  3
+snd_seq_device         16384  3 snd_seq,snd_seq_midi,snd_rawmidi
+snd_timer              49152  3 snd_seq,snd_hrtimer,snd_pcm
+drm_ttm_helper         12288  1 vmwgfx
+i2c_piix4              32768  0
+input_leds             12288  0
+snd                   143360  11 snd_seq,snd_seq_device,snd_intel8x0,snd_timer,snd_ac97_codec,snd_pcm,snd_rawmidi
+ttm                   110592  2 vmwgfx,drm_ttm_helper
+serio_raw              20480  0
+joydev                 32768  0
+soundcore              16384  1 snd
+intel_rapl_msr         20480  0
+intel_rapl_common      40960  1 intel_rapl_msr
+vboxguest             495616  6
+mac_hid                12288  0
+sch_fq_codel           24576  2
+msr                    12288  0
+parport_pc             53248  0
+ppdev                  24576  0
+lp                     28672  0
+parport                73728  3 parport_pc,lp,ppdev
+efi_pstore             12288  0
+nfnetlink              20480  6 nft_compat,nf_conntrack_netlink,nf_tables,ip_set
+dmi_sysfs              24576  0
+ip_tables              32768  0
+x_tables               65536  8 xt_conntrack,nft_compat,xt_tcpudp,xt_addrtype,xt_nat,xt_set,ip_tables,xt_MASQUERADE
+autofs4                57344  2
+btrfs                2019328  0
+blake2b_generic        24576  0
+raid10                 73728  0
+raid456               192512  0
+async_raid6_recov      20480  1 raid456
+async_memcpy           16384  2 raid456,async_raid6_recov
+async_pq               20480  2 raid456,async_raid6_recov
+async_xor              16384  3 async_pq,raid456,async_raid6_recov
+async_tx               16384  5 async_pq,async_memcpy,async_xor,raid456,async_raid6_recov
+xor                    20480  2 async_xor,btrfs
+raid6_pq              126976  4 async_pq,btrfs,raid456,async_raid6_recov
+libcrc32c              12288  5 nf_conntrack,nf_nat,btrfs,nf_tables,raid456
+raid1                  57344  0
+raid0                  24576  0
+dm_mirror              24576  0
+dm_region_hash         24576  1 dm_mirror
+dm_log                 20480  2 dm_region_hash,dm_mirror
+hid_generic            12288  0
+crct10dif_pclmul       12288  1
+crc32_pclmul           12288  0
+usbhid                 77824  0
+polyval_clmulni        12288  0
+hid                   180224  2 usbhid,hid_generic
+polyval_generic        12288  1 polyval_clmulni
+ghash_clmulni_intel    16384  0
+sha256_ssse3           32768  0
+sha1_ssse3             32768  0
+video                  73728  0
+psmouse               217088  0
+ahci                   49152  2
+libahci                53248  1 ahci
+e1000                 180224  0
+wmi                    28672  1 video
+pata_acpi              12288  0
+aesni_intel           356352  0
+crypto_simd            16384  1 aesni_intel
+cryptd                 24576  2 crypto_simd,ghash_clmulni_intel
