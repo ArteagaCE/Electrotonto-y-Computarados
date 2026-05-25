@@ -1,0 +1,22 @@
+20 módulos no cargados en el kernel pero disponibles de Cristian:
+
+/lib/modules/6.17.0-29-generic/kernel/mm/hwpoison-inject.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/samples/ftrace/sample-trace-array.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/samples/hung_task/hung_task_tests.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/samples/tsm-mr/tsm_mr_sample.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/samples/trace_printk/trace-printk.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/zfs/zfs.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/zfs/spl.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/kernel/kheaders.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/v4l2loopback/v4l2loopback.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/virt/lib/irqbypass.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/block/kyber-iosched.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/block/bfq.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/platform/atom/punit_atom_debug.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/kernel/msr.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/kernel/cpuid.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/kernel/cpu/mce/mce-inject.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/events/amd/amd-uncore.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/events/intel/intel-cstate.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/events/rapl.ko.zst
+/lib/modules/6.17.0-29-generic/kernel/arch/x86/kvm/kvm-intel.ko.zst
