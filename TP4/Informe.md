@@ -7,7 +7,7 @@
 * Martina Juri
 * Marcos Morán
 * Francisco Gomez Neimann
-* Cristian Arteaga
+* Cristian Eduardo Arteaga Barrera
 
 **Docentes:**
 
@@ -148,7 +148,7 @@ El campo `vermagic` resulta especialmente importante, ya que indica la versión 
 
 ---
 
-# Comparación con un módulo real del sistema
+# 1. Comparación con un módulo real del sistema
 
 Se buscaron módulos disponibles dentro del sistema mediante:
 
@@ -183,7 +183,7 @@ Esto refleja la diferencia entre un módulo de ejemplo y un driver utilizado rea
 
 ---
 
-# Descarga del módulo
+## Descarga del módulo
 
 Para descargar el módulo del kernel se utilizó:
 
@@ -208,31 +208,58 @@ Modulo descargado del kernel.
 Esto permitió observar cómo un error dentro de un módulo afecta directamente al kernel, ya que los módulos se ejecutan en espacio privilegiado y no poseen el aislamiento de memoria que tienen los programas normales de usuario.
 
 ![Mensaje de error del kernel al descargar el módulo mimodulo.](images/error-rmmod.png)
+
 ---
-# Diferencia en los drivers/modulos cargados en las PC de los integrantes
+# 2. Diferencia en los drivers/módulos cargados en las PC del grupo
 
-### Drivers de cada integrante
-[Drivers de Marcos](./Drivers%20de%20los%20integrantes/drivers_marcos.txt)
+## Drivers de cada integrante
+* [Drivers de Marcos](./Drivers%20de%20los%20integrantes/drivers_marcos.txt)
+* [Drivers de Cristian](./Drivers%20de%20los%20integrantes/drivers_cristian.txt) 
 
+### Metodología de comparación
+Para realizar una comparación entre los módulos cargados de un usuario con  Linux de forma nativa (Marcos) y un usuario con Linux desde una VM (Cristian), se procedió a estandarizar la salida del comando `lsmod` de cada integrante. Debido a que el tamaño en memoria y el número de dependencias de un mismo módulo varían según el hardware, comparar las salidas en crudo generaría falsos positivos. 
 
-### Modulos no cargados en el kernel pero disponibles de cada integrante
+Para solucionarlo, se utilizó una tubería de comandos en la terminal (`lsmod | awk 'NR>1 {print $1}' | sort`) con el fin de extraer únicamente la columna con los nombres de los módulos, omitir los encabezados y ordenarlos alfabéticamente. Finalmente, se utilizó la herramienta `diff -y` para poner ambos archivos lado a lado y visualizar mediante los símbolos `<` y `>` qué módulos estaban presentes en un sistema y ausentes en el otro.
 
-[Modulos disponibles pero no cargados marcos](./Modulos%20disponibles%20de%20los%20integrantes/modulos_disponibles_marcos.txt)
+### Conclusión del análisis comparativo
 
+* [diferencias.txt](<Drivers de los integrantes/diferencias.txt>)
 
+El resultado del comando `diff` (diferencias.txt) revela de forma muy clara el contraste arquitectónico entre un entorno virtualizado y el hardware físico de una PC real.
+
+Por un lado, el equipo de Cristian (columna izquierda) corre sobre una máquina virtual de VMware. Esto queda en evidencia por la presencia exclusiva de módulos destinados a la virtualización, como `vmw_balloon`, `vmwgfx` (controlador de gráficos virtual) y `vmw_vmci`, los cuales son inexistentes en el sistema de Marcos.
+
+Por otro lado, la computadora de Marcos (columna derecha) corresponde a un hardware físico. Su kernel debió cargar dinámicamente una gran cantidad de módulos para inicializar dispositivos reales y periféricos que la máquina virtual abstrae o directamente no posee. Entre las diferencias más notables a favor del equipo de Marcos encontramos:
+* **Gráficos dedicados:** Carga del módulo `amdgpu`, indicando el uso de hardware gráfico de AMD.
+* **Conectividad:** Presencia de múltiples módulos para red inalámbrica Wi-Fi, como `cfg80211`, `mac80211` y drivers específicos `rtw88_`, además de todo el stack de Bluetooth (`bluetooth`, `btusb`, `btintel`).
+* **Multimedia y almacenamiento:** Una extensa lista de controladores de audio avanzados (`snd_soc_...`, `snd_hda_...`) , soporte para cámara web (`uvcvideo`, `videodev`) y drivers para discos NVMe (`nvme`, `nvme_core`).
+
+Esta comparativa práctica demuestra cómo el kernel de Linux funciona de forma modular, cargando en memoria únicamente los drivers estrictamente necesarios para administrar el hardware real o virtual detectado durante el arranque del sistema operativo.
+
+## 3. Módulos disponibles en disco vs. módulos cargados en el kernel
+
+En Linux, existe una diferencia técnica entre los controladores que están **disponibles** y los que están **cargados**:
+
+* **Módulos almacenados (disponibles):** El sistema operativo incluye miles de módulos (archivos con extensión `.ko` o `.ko.zst`) que vienen precompilados y guardados físicamente en el disco rígido, alojados en el directorio `/lib/modules/$(uname -r)/`. Estos archivos conforman el repertorio o "caja de herramientas" del sistema. Están disponibles para ser utilizados, pero **no** se encuentran en la memoria RAM ni están en ejecución, por lo que no consumen recursos del sistema.
+
+* **Módulos cargados (activos):** Debido a que Linux posee un kernel dinámico, no necesita tener todos los drivers funcionando al mismo tiempo. Cuando el sistema operativo detecta la conexión de un hardware específico (por ejemplo, una placa Wi-Fi) o requiere una función particular, el kernel busca el archivo `.ko` correspondiente en el disco duro y lo **carga** dinámicamente en la memoria RAM (espacio del kernel). Solo los módulos que han sido cargados a la memoria son los que se encuentran activos gestionando el sistema, y son los únicos que aparecen listados al ejecutar el comando `lsmod`.
+
+### Modulos no cargados en el kernel pero disponibles de cada integrante:
+* [Módulos disponibles pero no cargados (Marcos)](./Modulos%20disponibles%20de%20los%20integrantes/modulos_disponibles_marcos.txt)
+* [Módulos disponibles pero no cargados (Cris)](<Modulos disponibles de los integrantes/modulos_disponibles_cris.txt>)
 ### Que pasa cuando un driver del dispositivo no está disponible?
 
-- Cuando el driver de un dispositivo no está disponible, el sistema operativo no puede controlar correctamente ese hardware. El dispositivo puede ser detectado físicamente, pero no podrá ser utilizado o funcionará de manera limitada mediante un controlador genérico. Esto ocurre porque el driver es el componente que permite al kernel comunicarse con el dispositivo, traduciendo las operaciones del sistema en instrucciones específicas para ese hardware. En Linux, muchos drivers se cargan como módulos del kernel; si el módulo correspondiente no está disponible, no puede cargarse y el dispositivo queda sin soporte funcional.
+Cuando el driver de un dispositivo no está disponible, el sistema operativo no puede controlar correctamente ese hardware. El dispositivo puede ser detectado físicamente, pero no podrá ser utilizado o funcionará de manera limitada mediante un controlador genérico. Esto ocurre porque el driver es el componente que permite al kernel comunicarse con el dispositivo, traduciendo las operaciones del sistema en instrucciones específicas para ese hardware. En Linux, muchos drivers se cargan como módulos del kernel; si el módulo correspondiente no está disponible, no puede cargarse y el dispositivo queda sin soporte funcional.
 
 Ej: Si falta el módulo/driver de una placa Wi-Fi, el sistema puede reconocer que hay un adaptador conectado, pero no va a crear una interfaz inalámbrica utilizable como wlan0 o wlpXsY.
 
-# Ejecución de hwinfo en hardware real
+# 4. Ejecución de hwinfo en hardware real
 
 Se ejecutó `hwinfo` sobre una PC real y se guardó la salida en el siguiente archivo:
 
 [Ver información de hardware del equipo](./hwinfo_out.txt)
 
-# Diferencia entre un programa y un módulo
+# 5. Diferencia entre un programa y un módulo
 
 ## Programa de usuario
 
@@ -263,22 +290,52 @@ Errores dentro de un módulo pueden provocar:
 * congelamiento del sistema
 
 ---
+# 6. Llamadas al sistema de un programa "Hello World" en C
 
-# Espacio de usuario y espacio del kernel
+Para observar las llamadas al sistema que realiza un programa básico en espacio de usuario ([programa](hola.c)), se compiló un código en C utilizando la función `printf` y se ejecutó a través de la herramienta de diagnóstico `strace`.
 
-## Espacio de usuario
+![llamadas previas 1 hello world](images/lista_llamadas_1.png)
+![llamadas previas 2 hello world](images/lista_llamadas_2.png)
+
+Al analizar la salida, se comprueba que un programa de usuario no puede interactuar con el hardware de forma directa. El proceso inicia con la llamada `execve` y realiza múltiples peticiones `mmap` y `openat` para cargar en memoria la biblioteca estándar de C (`libc.so.6`). 
+
+El momento exacto en el que el programa solicita imprimir el texto en pantalla ocurre mediante la llamada al sistema fundamental:
+`write(1, "¡Hola, mundo desde el espacio de usuario!\n", 43)`
+
+En esta instrucción, el programa le envía al kernel el buffer de texto (43 bytes) apuntando al descriptor de archivo `1` (Standard Output). Finalmente, el ciclo de vida del programa concluye con la llamada `exit_group(0)`, correspondiente al `return 0` de la función principal, indicando al kernel que debe terminar el proceso y liberar los recursos.
+
+# 7. Segmentation Fault
+
+Un *Segmentation Fault* es un error crítico que ocurre cuando un programa en ejecución intenta acceder a una posición de la memoria RAM que no le pertenece o para la cual no tiene los permisos adecuados. Los ejemplos más comunes que causan este error incluyen:
+* Intentar leer o escribir en un puntero nulo (`NULL`).
+* Acceder a un índice de un arreglo que está fuera de sus límites.
+* Intentar escribir datos en una sección de la memoria marcada como de "solo lectura".
+
+### ¿Cómo lo maneja el kernel?
+El kernel trabaja en conjunto con el hardware del procesador, específicamente con la Unidad de Manejo de Memoria (MMU), para aislar la memoria de cada proceso. 
+1. **Detección:** Cuando un programa intenta hacer un acceso ilegal, la MMU bloquea la acción por hardware y dispara una excepción que despierta al kernel.
+2. **Intervención:** El kernel toma el control de la situación para proteger la integridad del sistema operativo y la de los demás programas.
+3. **Sentencia:** Al identificar al proceso culpable, el kernel le envía una señal asíncrona de terminación fatal conocida como `SIGSEGV` (Signal Segmentation Violation).
+
+### ¿Cómo lo maneja un programa?
+* **Comportamiento por defecto:** Cuando un programa de usuario recibe la señal `SIGSEGV` enviada por el kernel, se cierra abruptamente. Como mecanismo de ayuda, el sistema suele generar un archivo llamado "volcado de memoria" (*Core Dump*), que es una foto del estado de la memoria en el instante del choque, útil para que el desarrollador pueda depurar el error.
+* **Manejo personalizado:** Aunque es una mala práctica intentar recuperarse de un fallo de memoria real, técnicamente un programa en C puede utilizar funciones como `signal()` o `sigaction()` para registrar un "manejador de señales" (*signal handler*). Esto le permite al programa interceptar la señal `SIGSEGV`, imprimir un mensaje de error personalizado en la consola, guardar información crítica y luego cerrarse de forma un poco más controlada.
+
+---
+
+# 8.9.10.
+## Espacio de usuario y espacio del kernel
+### Espacio de usuario
 
 Es el entorno donde se ejecutan aplicaciones comunes. Los programas no poseen acceso directo al hardware y deben interactuar con el kernel mediante llamadas al sistema.
 
-## Espacio del kernel
+### Espacio del kernel
 
 Es el entorno donde se ejecuta el núcleo del sistema operativo y los módulos cargados. Posee acceso completo al hardware y a toda la memoria del sistema.
 
 Todos los módulos comparten el mismo espacio de memoria del kernel, por lo que un error puede afectar a todo el sistema operativo.
 
----
-
-# Drivers y contenido de /dev
+## Drivers y contenido de /dev
 
 Se exploró el contenido del directorio `/dev` mediante:
 
@@ -316,8 +373,7 @@ Los drivers del kernel son los encargados de gestionar estos dispositivos y expo
 
 ![Contenido del directorio /dev.](images/dev.png)
 ---
-
-# Información de dispositivos del sistema
+### Información de dispositivos del sistema
 
 También se utilizó:
 
@@ -342,7 +398,6 @@ Esto permitió observar:
 * dispositivos virtuales utilizados por VirtualBox
 
 ![Información de dispositivos del sistema obtenida con lsblk.](images/lsblk.png)
----
 
 # Secure Boot y EFI en la máquina virtual
 
@@ -383,8 +438,8 @@ Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firm
 ![Mensaje de error al intentar verificar el estado de Secure Boot.](images/secureboot.png)
 
 ---
-
-# ¿Qué es checkinstall?
+# Desafío 1:
+## ¿Qué es checkinstall y para qué sirve?
 
 `checkinstall` es una herramienta que permite crear paquetes instalables (`.deb`) a partir de software compilado manualmente.
 
@@ -406,21 +461,97 @@ Esto genera un paquete administrable por el sistema de paquetes de Linux, permit
 * desinstalación sencilla
 * seguimiento de archivos instalados
 
----
+## Empaquetado de un helloword
 
-# ¿Qué ocurre si falta un driver?
+Para cumplir con este desafío, se creó un programa básico en C ([hola.c](hola.c)) y un archivo `Makefile` con las instrucciones necesarias de instalación. Al ejecutar el comando `sudo checkinstall`, la herramienta interceptó el proceso, solicitó la configuración de los metadatos básicos y generó exitosamente el archivo instalable.
 
-Cuando un driver no está disponible:
+![Creación exitosa del paquete con checkinstall](images/hola_mundo_empaquetado.png)
 
-* el sistema no puede inicializar correctamente el hardware
-* el dispositivo puede aparecer como desconocido
-* no se crea la entrada correspondiente en `/dev`
-* el hardware queda inutilizable
-
-Esto demuestra la importancia de los módulos del kernel y drivers dentro del sistema operativo.
+## Acciones para impulasar la seguridad del kernel evitando cargar módulos que no estén firmados .rootkits
 
 ---
+# Desafío 2
 
+## ¿Qué funcionalidades tiene diponibles un programa y un módulo?
+
+## Espacio de usuario y espacio del kernel
+### Espacio de usuario
+
+Es el entorno donde se ejecutan aplicaciones comunes. Los programas no poseen acceso directo al hardware y deben interactuar con el kernel mediante llamadas al sistema.
+
+### Espacio del kernel
+
+Es el entorno donde se ejecuta el núcleo del sistema operativo y los módulos cargados. Posee acceso completo al hardware y a toda la memoria del sistema.
+
+Todos los módulos comparten el mismo espacio de memoria del kernel, por lo que un error puede afectar a todo el sistema operativo.
+
+## Espacio de datos
+
+## Drivers y contenido de /dev
+
+Se exploró el contenido del directorio `/dev` mediante:
+
+```bash
+ls /dev | head
+```
+
+Resultado:
+
+```text
+autofs
+block
+bsg
+btrfs-control
+bus
+cdrom
+char
+console
+core
+cpu
+```
+
+El directorio `/dev` contiene archivos especiales que representan dispositivos físicos y virtuales del sistema.
+
+En Linux, muchos dispositivos se acceden como si fueran archivos.
+
+Ejemplos:
+
+* `/dev/sda` → disco rígido
+* `/dev/cdrom` → lectora
+* `/dev/null` → dispositivo virtual
+* `/dev/random` → generador aleatorio
+
+Los drivers del kernel son los encargados de gestionar estos dispositivos y exponer interfaces accesibles desde espacio de usuario.
+
+![Contenido del directorio /dev.](images/dev.png)
+---
+### Información de dispositivos del sistema
+
+También se utilizó:
+
+```bash
+lsblk
+```
+
+Resultado parcial:
+
+```text
+sda      79,4G
+├─sda1      1M
+├─sda2    513M /boot/efi
+└─sda3   78,9G /
+```
+
+Esto permitió observar:
+
+* discos detectados
+* particiones
+* puntos de montaje
+* dispositivos virtuales utilizados por VirtualBox
+
+![Información de dispositivos del sistema obtenida con lsblk.](images/lsblk.png)
+
+---
 # Conclusión
 
 Durante el desarrollo del TP4 se trabajó directamente con módulos del kernel Linux, observando cómo se compilan, cargan y descargan dinámicamente dentro del sistema operativo.
