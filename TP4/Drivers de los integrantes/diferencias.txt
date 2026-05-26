@@ -1,0 +1,189 @@
+ac97_bus							ac97_bus
+							      >	acpi_tad
+aesni_intel							aesni_intel
+ahci							      |	af_alg
+							      >	algif_hash
+							      >	algif_skcipher
+							      >	amd_atl
+							      >	amdgpu
+							      >	amd_pmc
+							      >	amdxcp
+autofs4								autofs4
+binfmt_misc							binfmt_misc
+							      >	bluetooth
+							      >	bnep
+							      >	bridge
+							      >	btbcm
+							      >	btintel
+							      >	btmtk
+							      >	btrtl
+							      >	btusb
+							      >	ccm
+							      >	ccp
+							      >	cec
+							      >	cfg80211
+							      >	cmac
+dmi_sysfs							dmi_sysfs
+							      >	drm_buddy
+							      >	drm_display_helper
+							      >	drm_exec
+							      >	drm_panel_backlight_quirks
+							      >	drm_suballoc_helper
+drm_ttm_helper							drm_ttm_helper
+e1000							      |	edac_mce_amd
+							      >	ee1004
+efi_pstore							efi_pstore
+floppy							      <
+gameport						      <
+ghash_clmulni_intel						ghash_clmulni_intel
+							      >	gpu_sched
+hid								hid
+hid_generic							hid_generic
+							      >	hid_multitouch
+							      >	hp_wmi
+							      >	i2c_algo_bit
+							      >	i2c_hid
+							      >	i2c_hid_acpi
+i2c_piix4							i2c_piix4
+i2c_smbus							i2c_smbus
+input_leds							input_leds
+intel_pmc_core						      <
+intel_pmc_ssram_telemetry				      <
+intel_rapl_common						intel_rapl_common
+intel_rapl_msr							intel_rapl_msr
+intel_uncore_frequency_common				      |	ip_set
+intel_vsec						      <
+ip_tables							ip_tables
+isofs							      |	irqbypass
+joydev								joydev
+libahci							      |	k10temp
+							      >	kvm
+							      >	kvm_amd
+							      >	libarc4
+							      >	llc
+lp								lp
+							      >	mac80211
+mac_hid								mac_hid
+							      >	mc
+Module								Module
+mptbase							      <
+mptscsih						      <
+mptspi							      <
+msr								msr
+							      >	nf_conntrack
+							      >	nf_defrag_ipv4
+							      >	nf_defrag_ipv6
+							      >	nf_nat
+nfnetlink							nfnetlink
+							      >	nf_tables
+							      >	nft_chain_nat
+							      >	nft_compat
+							      >	nls_iso8859_1
+							      >	nvme
+							      >	nvme_auth
+							      >	nvme_core
+							      >	nvme_keyring
+							      >	overlay
+parport								parport
+parport_pc							parport_pc
+pata_acpi						      |	platform_profile
+pmt_class						      <
+pmt_discovery						      <
+pmt_telemetry						      <
+polyval_clmulni							polyval_clmulni
+ppdev								ppdev
+psmouse							      <
+qrtr								qrtr
+rapl								rapl
+							      >	rc_core
+							      >	rfcomm
+							      >	rtw88_8821c
+							      >	rtw88_8821ce
+							      >	rtw88_core
+							      >	rtw88_pci
+sch_fq_codel							sch_fq_codel
+scsi_transport_spi					      <
+serio_raw							serio_raw
+snd								snd
+snd_ac97_codec						      |	snd_acp3x_pdm_dma
+snd_ens1371						      |	snd_acp3x_rn
+							      >	snd_acp_config
+							      >	snd_acp_legacy_common
+							      >	snd_acp_legacy_mach
+							      >	snd_acp_mach
+							      >	snd_acp_pci
+							      >	snd_amd_acpi_mach
+							      >	snd_amd_sdw_acpi
+							      >	snd_compress
+							      >	snd_ctl_led
+							      >	snd_hda_codec
+							      >	snd_hda_codec_alc269
+							      >	snd_hda_codec_atihdmi
+							      >	snd_hda_codec_generic
+							      >	snd_hda_codec_hdmi
+							      >	snd_hda_codec_realtek_lib
+							      >	snd_hda_core
+							      >	snd_hda_intel
+							      >	snd_hda_scodec_component
+snd_hrtimer							snd_hrtimer
+							      >	snd_hwdep
+							      >	snd_intel_dspcfg
+							      >	snd_intel_sdw_acpi
+							      >	snd_pci_acp3x
+							      >	snd_pci_acp5x
+							      >	snd_pci_acp6x
+							      >	snd_pci_ps
+snd_pcm								snd_pcm
+							      >	snd_pcm_dmaengine
+snd_rawmidi							snd_rawmidi
+							      >	snd_rn_pci_acp3x
+							      >	snd_rpl_pci_acp6x
+snd_seq								snd_seq
+snd_seq_device							snd_seq_device
+snd_seq_dummy							snd_seq_dummy
+snd_seq_midi							snd_seq_midi
+snd_seq_midi_event						snd_seq_midi_event
+							      >	snd_soc_acpi
+							      >	snd_soc_acpi_amd_match
+							      >	snd_soc_acpi_amd_sdca_quirks
+							      >	snd_soc_core
+							      >	snd_soc_dmic
+							      >	snd_soc_nau8821
+							      >	snd_soc_sdca
+							      >	snd_sof
+							      >	snd_sof_amd_acp
+							      >	snd_sof_amd_acp63
+							      >	snd_sof_amd_acp70
+							      >	snd_sof_amd_rembrandt
+							      >	snd_sof_amd_renoir
+							      >	snd_sof_amd_vangogh
+							      >	snd_sof_pci
+							      >	snd_sof_utils
+							      >	snd_sof_xtensa_dsp
+snd_timer							snd_timer
+soundcore							soundcore
+							      >	soundwire_amd
+							      >	soundwire_bus
+							      >	soundwire_generic_allocation
+							      >	sparse_keymap
+							      >	stp
+ttm								ttm
+usbhid								usbhid
+vga16fb							      |	uvc
+vgastate						      |	uvcvideo
+vmw_balloon						      |	video
+vmwgfx							      |	videobuf2_common
+vmw_vmci						      |	videobuf2_memops
+vmw_vsock_virtio_transport_common			      |	videobuf2_v4l2
+vmw_vsock_vmci_transport				      |	videobuf2_vmalloc
+vsock							      |	videodev
+vsock_loopback						      |	wireless_hotkey
+							      >	wmi
+							      >	wmi_bmof
+							      >	xfrm_algo
+							      >	xfrm_user
+x_tables							x_tables
+							      >	xt_addrtype
+							      >	xt_conntrack
+							      >	xt_MASQUERADE
+							      >	xt_set

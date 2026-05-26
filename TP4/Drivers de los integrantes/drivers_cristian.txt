@@ -1,0 +1,74 @@
+ac97_bus               12288  1 snd_ac97_codec
+aesni_intel            98304  0
+ahci                   49152  2
+autofs4                57344  2
+binfmt_misc            24576  1
+dmi_sysfs              20480  0
+drm_ttm_helper         16384  2 vmwgfx
+e1000                 180224  0
+efi_pstore             12288  0
+floppy                135168  0
+gameport               20480  1 snd_ens1371
+ghash_clmulni_intel    12288  0
+hid                   262144  2 usbhid,hid_generic
+hid_generic            12288  0
+i2c_piix4              32768  0
+i2c_smbus              20480  1 i2c_piix4
+input_leds             12288  0
+intel_pmc_core        135168  0
+intel_pmc_ssram_telemetry    16384  1 intel_pmc_core
+intel_rapl_common      53248  1 intel_rapl_msr
+intel_rapl_msr         20480  0
+intel_uncore_frequency_common    20480  0
+intel_vsec             24576  2 intel_pmc_ssram_telemetry,pmt_telemetry
+ip_tables              32768  0
+isofs                  61440  2
+joydev                 32768  0
+libahci                53248  1 ahci
+lp                     32768  0
+mac_hid                12288  0
+Module                  Size  Used by
+mptbase               122880  2 mptspi,mptscsih
+mptscsih               49152  1 mptspi
+mptspi                 24576  1
+msr                    12288  0
+nfnetlink              20480  1
+parport                73728  3 parport_pc,lp,ppdev
+parport_pc             53248  0
+pata_acpi              12288  0
+pmt_class              20480  2 pmt_telemetry,pmt_discovery
+pmt_discovery          20480  1 pmt_telemetry
+pmt_telemetry          16384  1 intel_pmc_core
+polyval_clmulni        12288  0
+ppdev                  24576  0
+psmouse               217088  0
+qrtr                   53248  2
+rapl                   20480  0
+sch_fq_codel           24576  2
+scsi_transport_spi     40960  1 mptspi
+serio_raw              20480  0
+snd                   143360  11 snd_seq,snd_seq_device,snd_timer,snd_ac97_codec,snd_pcm,snd_rawmidi,snd_ens1371
+snd_ac97_codec        196608  1 snd_ens1371
+snd_ens1371            40960  1
+snd_hrtimer            12288  1
+snd_pcm               200704  2 snd_ac97_codec,snd_ens1371
+snd_rawmidi            57344  2 snd_seq_midi,snd_ens1371
+snd_seq               122880  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
+snd_seq_device         16384  3 snd_seq,snd_seq_midi,snd_rawmidi
+snd_seq_dummy          12288  0
+snd_seq_midi           24576  0
+snd_seq_midi_event     16384  1 snd_seq_midi
+snd_timer              53248  3 snd_seq,snd_hrtimer,snd_pcm
+soundcore              16384  1 snd
+ttm                   126976  2 vmwgfx,drm_ttm_helper
+usbhid                 77824  0
+vga16fb                32768  0
+vgastate               20480  1 vga16fb
+vmw_balloon            28672  0
+vmwgfx                471040  16
+vmw_vmci              106496  2 vmw_balloon,vmw_vsock_vmci_transport
+vmw_vsock_virtio_transport_common    57344  1 vsock_loopback
+vmw_vsock_vmci_transport    53248  2
+vsock                  65536  7 vmw_vsock_virtio_transport_common,vsock_loopback,vmw_vsock_vmci_transport
+vsock_loopback         12288  0
+x_tables               65536  1 ip_tables
