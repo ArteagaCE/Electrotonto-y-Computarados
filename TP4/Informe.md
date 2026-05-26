@@ -365,6 +365,14 @@ Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firm
 
 # 9. Compilación, carga y descarga de módulo propio imprimiendo nombre del equipo en los registros del kernel
 
+#### Preparación
+
+![SecureBoot habilitado](images/secureboot-on.png)
+
+![Preparación para crear la firma del módulo](images/preparación-firma.jpeg)
+
+
+
 # 10. ¿Qué pasa si mi compañero con Secure Boot habilitado intenta cargar un módulo firmado por mí?
 
 El kernel de la otra máquina rechazará el módulo y arrojará un error de "Operación no permitida" o "Clave requerida no disponible". 
