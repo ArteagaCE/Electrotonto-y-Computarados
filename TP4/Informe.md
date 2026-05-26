@@ -363,6 +363,8 @@ Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firm
 
 ![Mensaje de error al intentar verificar el estado de Secure Boot.](images/secureboot.png)
 
+# 9. Compilación, carga y descarga de módulo propio imprimiendo nombre del equipo en los registros del kernel
+
 # 10. ¿Qué pasa si mi compañero con Secure Boot habilitado intenta cargar un módulo firmado por mí?
 
 El kernel de la otra máquina rechazará el módulo y arrojará un error de "Operación no permitida" o "Clave requerida no disponible". 
@@ -409,7 +411,7 @@ Para cumplir con este desafío, se creó un programa básico en C ([hola.c](hola
 
 ![Creación exitosa del paquete con checkinstall](images/hola_mundo_empaquetado.png)
 
-## Acciones para impulasar la seguridad del kernel evitando cargar módulos que no estén firmados (rootkits).
+## Acciones para impulsar la seguridad del kernel evitando cargar módulos que no estén firmados (rootkits).
 Un *rootkit* es un tipo de software malicioso diseñado para obtener acceso de administrador (root) en un sistema y ocultar su propia existencia. Los rootkits de nivel de kernel son los más peligrosos, ya que operan con los máximos privilegios del sistema operativo, permitiéndoles interceptar llamadas al sistema, ocultar procesos y evadir antivirus tradicionales.
 
 Para mejorar la seguridad del kernel y evitar este tipo de vulnerabilidades, se implementa la firma digital de módulos. Cuando esta política (generalmente respaldada por Secure Boot) está activa, el kernel de Linux se niega a cargar cualquier archivo `.ko` (módulo) que no posea una firma criptográfica válida o cuya firma no provenga de una Autoridad Certificadora (CA) o clave (MOK) pre-aprobada en el firmware de la placa base. Esto asegura que solo el código legítimo y confiable pueda extender las funcionalidades del núcleo, impidiendo que un atacante cargue un rootkit empaquetado como un módulo falso.
