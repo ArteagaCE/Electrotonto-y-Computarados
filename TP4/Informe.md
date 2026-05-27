@@ -366,12 +366,135 @@ Aun así, se investigó teóricamente el funcionamiento de Secure Boot y la firm
 # 9. Compilación, carga y descarga de módulo propio imprimiendo nombre del equipo en los registros del kernel
 
 #### Preparación
+En esta sección se trabajó con la compilación, firma, carga y descarga de un módulo de kernel propio en **Zorin OS**, sistema basado en Ubuntu. El objetivo fue intentar firmar un módulo de kernel siguiendo como referencia el procedimiento indicado en AskUbuntu sobre el uso de la herramienta `sign-file`.
 
-![SecureBoot habilitado](images/secureboot-on.png)
+El punto de partida fue la necesidad de cargar un módulo llamado `mimodulo.ko`. Al intentar insertarlo en el kernel mediante el comando:
+
+```bash
+sudo insmod mimodulo.ko
+```
+El sistema devolvía el siguiente error
+
+```bash
+insmod: ERROR: could not insert module mimodulo.ko: Key was rejected by service
+```
+Este mensaje indica que el kernel rechazó el módulo porque no estaba firmado con una clave confiable para el sistema. Esto ocurre especialmente cuando el equipo tiene Secure Boot activado, ya que el kernel exige que los módulos cargados estén firmados digitalmente.
+
+![SecureBoot habilitado](images/secureboot-on.jpeg)
+<p style="text-align: center;">Aqui se puede ver que el secure boot estaba activado haciendo uso del comando mokutil --sb-state</p>
+
+Luego se instalaron las herramientas necesarias para trabajar con la firma de módulos:
+```bash
+sudo apt update
+sudo apt install mokutil openssl linux-headers-$(uname -r) build-essential
+```
 
 ![Preparación para crear la firma del módulo](images/preparación-firma.jpeg)
 
+A continuación, se generó una clave privada y un certificado público utilizando OpenSSL. Para mantener los archivos ordenados, se creó una carpeta específica:
 
+```bash
+mkdir -p ~/firma-modulos-kernel
+cd ~/firma-modulos-kernel
+```
+Dentro de esa carpeta se ejecutó el siguiente comando:
+```bash
+openssl req -new -x509 -newkey rsa:2048 \
+  -keyout MOK.priv \
+  -outform DER \
+  -out MOK.der \
+  -nodes \
+  -days 36500 \
+  -subj "/CN=Clave para firmar modulos de kernel/"
+```
+![creacion de keys mok](images/creacion-de-keys-mok.jpeg)
+
+Este comando generó dos archivos principales:
+
++ `MOK.priv`: clave privada utilizada para firmar el módulo.
++ `MOK.der`: certificado público que debe ser registrado en el sistema.
+
+Luego se importó el certificado público mediante `mokutil`:
+```bash
+sudo mokutil --import MOK.der
+```
+El sistema solicitó una contraseña temporal. Después de reiniciar el equipo, apareció el administrador MOK, donde se completó el enrolamiento de la clave seleccionando la opción **Enroll MOK**. Este paso fue necesario para que Secure Boot reconociera como confiable la clave utilizada para firmar el módulo.
+
+![Pantalla mok](images/pantalla-mok.jpeg)
+
+![Firma mok](images/mok-firma.jpeg)
+<p style="text-align: center;">Detalles de la clave pública</p>
+
+Una vez enrolada la clave, se buscó la ubicación de la herramienta `sign-file`, que es el programa utilizado para firmar módulos de kernel. En este caso, se encontraba dentro de `/usr/src`, por lo que se verificó su ubicación con:
+```bash
+find /usr/src -name sign-file 2>/dev/null
+```
+La ruta esperada tiene una forma similar a la siguiente:
+```bash
+/usr/src/linux-headers-$(uname -r)/scripts/sign-file
+```
+Luego se firmó el módulo con el siguiente comando:
+```bash
+sudo /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 MOK.priv MOK.der mimodulo.ko
+```
+![Firma mok](images/modulo-firmado.jpeg)
+<p style="text-align: center;">Luego de firmar el módulo, se verificó la firma mediante el comando modinfo</p>
+
+Además de firmar el módulo, se agregó evidencia de compilación, carga y descarga del módulo. Para ello, el módulo fue programado para imprimir mensajes en los registros del kernel, incluyendo el nombre del equipo. El código del módulo utiliza `utsname()->nodename` para obtener el nombre del host desde el kernel.
+
+El archivo `mimodulo2.c` utilizado tiene la siguiente estructura:
+```bash
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/utsname.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Electrotonto y computarados");
+MODULE_DESCRIPTION("Modulo de kernel firmado para TP");
+MODULE_VERSION("1.0");
+
+static int __init mimodulo_init(void)
+{
+    pr_info("mimodulo: modulo cargado correctamente en el equipo %s\n",
+            utsname()->nodename);
+    return 0;
+}
+
+static void __exit mimodulo_exit(void)
+{
+    pr_info("mimodulo: modulo descargado correctamente del equipo %s\n",
+            utsname()->nodename);
+}
+
+module_init(mimodulo_init);
+module_exit(mimodulo_exit);
+```
+La compilación se realizó con:
+```bash
+make
+```
+Luego de compilar y firmar el módulo, se intentó cargarlo nuevamente:
+```bash
+sudo insmod ./mimodulo.ko
+```
+Para verificar que el módulo estuviera cargado, se utilizó:
+```bash
+lsmod | grep mimodulo
+```
+Además, se revisaron los registros del kernel con:
+```bash
+sudo dmesg | tail -20
+```
+Finalmente, el módulo se descargó mediante:
+```bash
+sudo rmmod mimodulo
+```
+
+![modulo cargado](images/modulo-cargado-en-el-kernel-nombrado.jpeg)
+<p style="text-align: center;">Aquí se evidencia el resultado</p>
+
+De esta manera, se pudo documentar el proceso completo: primero se detectó que el módulo era rechazado por no estar firmado, luego se generó una clave MOK, se registró esa clave en el sistema, se firmó el módulo con `sign-file`, se verificó la firma con `modinfo`, se cargó el módulo con `insmod`, se verificó su carga con `lsmod` y se comprobó su funcionamiento mediante los mensajes impresos en `dmesg`. Finalmente, se descargó el módulo con `rmmod` y también se verificó esa acción en los registros del kernel.
 
 # 10. ¿Qué pasa si mi compañero con Secure Boot habilitado intenta cargar un módulo firmado por mí?
 

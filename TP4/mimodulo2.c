@@ -4,7 +4,7 @@
 #include <linux/utsname.h>
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Ariel");
+MODULE_AUTHOR("Electrotonto y computarados");
 MODULE_DESCRIPTION("Modulo de kernel firmado para TP");
 MODULE_VERSION("1.0");
 
