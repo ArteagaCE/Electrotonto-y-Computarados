@@ -1,0 +1,33 @@
+francisco@francisco-MS-7A74:~/Escritorio/TP4/kenel-modules/part1/module$ modinfo mimodulo.ko 
+filename:       /home/francisco/Escritorio/TP4/kenel-modules/part1/module/mimodulo.ko
+author:         Catedra de SdeC
+description:    Primer modulo ejemplo
+license:        GPL
+srcversion:     C6390D617B2101FB1B600A9
+depends:        
+retpoline:      Y
+name:           mimodulo
+vermagic:       6.8.0-51-generic SMP preempt mod_unload modversions 
+sig_id:         PKCS#7
+signer:         Francisco Kernel Module Signing
+sig_key:        2D:2F:3C:D3:E2:DC:11:09:3A:7C:E3:B2:58:D4:A2:C4:8A:60:57:02
+sig_hashalgo:   sha256
+signature:      4B:72:D9:6F:E2:0D:85:EC:5F:16:7E:40:A9:12:B6:76:10:A3:8B:13:
+		69:87:DD:F9:BF:7E:9C:00:D4:36:FB:25:70:36:CE:2B:25:41:39:15:
+		64:31:0A:7B:B6:A8:E0:76:67:39:BE:D4:4E:36:13:63:2B:78:DF:00:
+		A0:5C:6D:6C:37:83:FD:99:F0:44:1A:3A:CC:21:1A:3E:B7:53:41:FF:
+		2D:2F:37:AD:28:45:D4:3D:54:92:23:D2:13:73:57:AF:EB:7A:50:15:
+		E7:DD:17:A9:36:A0:BD:13:87:43:CA:0E:4C:46:A9:BF:B5:54:A1:71:
+		A8:B3:47:4B:71:6B:07:75:81:AE:34:E5:9F:B6:ED:D3:72:12:17:BD:
+		D0:A2:DA:E3:A2:5A:E7:6C:5E:0F:45:8C:F1:2E:75:01:F9:18:92:18:
+		04:DB:D8:D0:DD:52:9D:45:45:39:EF:5D:CD:BC:8E:DB:05:0D:86:3F:
+		56:90:56:CF:92:CB:76:25:2F:B8:20:87:11:C8:CE:0C:AF:85:C0:5B:
+		2F:71:45:1D:09:2E:0D:F5:07:23:02:2D:69:64:26:6E:E7:E4:F6:79:
+		3F:C2:38:2C:50:3D:66:59:25:E0:04:AD:01:5F:E0:CD:24:CF:3F:16:
+		94:E1:39:E8:51:17:E3:D5:98:07:60:54:11:12:8D:20
+
+
+
+
+
+
