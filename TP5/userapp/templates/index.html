@@ -1,298 +1,210 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CDD Sensor — Visualizador</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDD Sensor</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
+      min-height: 100vh;
       background: #0d1117;
       color: #e6edf3;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem;
+      font-family: system-ui, sans-serif;
+      padding: 28px;
     }
-
-    header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    header h1 { font-size: 1.6rem; color: #58a6ff; }
-    header p  { color: #8b949e; font-size: 0.9rem; margin-top: 0.3rem; }
-
-    /* ── Selector de señal ── */
-    .signal-bar {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-    .sig-btn {
-      padding: 0.5rem 1.4rem;
-      border-radius: 6px;
-      border: 2px solid #30363d;
+    main { max-width: 920px; margin: 0 auto; }
+    h1 { margin: 0 0 6px; color: #58a6ff; font-size: 28px; }
+    .sub { color: #8b949e; margin-bottom: 22px; }
+    .buttons { display: flex; gap: 10px; margin-bottom: 16px; }
+    button {
       background: #161b22;
-      color: #8b949e;
-      font-size: 0.95rem;
+      color: #e6edf3;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 9px 14px;
       cursor: pointer;
-      transition: all 0.2s;
     }
-    .sig-btn:hover          { border-color: #58a6ff; color: #58a6ff; }
-    .sig-btn.active         { border-color: #3fb950; background: #1a3a22; color: #3fb950; }
-    .sig-btn.active-voltage { border-color: #d29922; background: #3b2e00; color: #d29922; }
-
-    /* ── Card principal ── */
-    .card {
+    button.active { border-color: #3fb950; color: #3fb950; }
+    button.active2 { border-color: #d29922; color: #d29922; }
+    .panel {
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 1.5rem;
-      width: 100%;
-      max-width: 860px;
+      border-radius: 8px;
+      padding: 18px;
     }
-
-    /* ── Valor actual ── */
-    .current-value {
+    .value {
       display: flex;
       align-items: baseline;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
+      gap: 10px;
+      margin-bottom: 12px;
     }
-    .current-value .number { font-size: 2.8rem; font-weight: 700; }
-    .current-value .unit   { font-size: 1.2rem; color: #8b949e; }
-    .current-value .label  { font-size: 0.85rem; color: #8b949e; margin-left: auto; }
-
-    /* ── Gráfico ── */
-    .chart-wrapper {
-      position: relative;
+    #numDisplay { font-size: 52px; font-weight: 700; color: #3fb950; }
+    #unitDisplay, #nameDisplay { color: #8b949e; }
+    canvas {
+      width: 100%;
       height: 320px;
+      display: block;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
     }
-
-    /* ── Barra de estado ── */
-    .status-bar {
+    .status {
       display: flex;
-      gap: 1.5rem;
-      margin-top: 1rem;
-      font-size: 0.82rem;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 12px;
       color: #8b949e;
+      font-size: 14px;
     }
     .dot {
       display: inline-block;
-      width: 8px; height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      margin-right: 4px;
-      background: #3fb950;
+      background: #f85149;
+      margin-right: 6px;
     }
-    .dot.off { background: #f85149; }
-
-    .color-temp    { color: #3fb950; }
-    .color-voltage { color: #d29922; }
+    .dot.on { background: #3fb950; }
   </style>
 </head>
 <body>
+<main>
+  <h1>CDD Sensor - Visualizador en tiempo real</h1>
+  <div class="sub">RdC TP5 · Raspberry Pi · 1 Hz</div>
 
-<header>
-  <h1>CDD Sensor — Visualizador en tiempo real</h1>
-  <p>RdC TP5 &nbsp;·&nbsp; Raspberry Pi &nbsp;·&nbsp; 1 Hz</p>
-</header>
+  <div class="buttons">
+    <button id="btn1" class="active" onclick="selectSignal(1)">Senal 1 - GPIO17</button>
+    <button id="btn2" onclick="selectSignal(2)">Senal 2 - GPIO27</button>
+  </div>
 
-<div class="signal-bar">
-  <button id="btn1" class="sig-btn active"  onclick="selectSignal(1)">
-    🌡️ Señal 1 — Temperatura
-  </button>
-  <button id="btn2" class="sig-btn"         onclick="selectSignal(2)">
-    ⚡ Señal 2 — Voltaje
-  </button>
-</div>
+  <section class="panel">
+    <div class="value">
+      <span id="numDisplay">--</span>
+      <span id="unitDisplay">nivel logico</span>
+      <span id="nameDisplay">Senal 1</span>
+    </div>
 
-<div class="card">
-  <div class="current-value">
-    <span id="numDisplay" class="number color-temp">—</span>
-    <span id="unitDisplay" class="unit">°C</span>
-    <span id="nameDisplay" class="label">Temperatura</span>
-  </div>
-  <div class="chart-wrapper">
-    <canvas id="chart"></canvas>
-  </div>
-  <div class="status-bar">
-    <span><span id="connDot" class="dot off"></span><span id="connText">Desconectado</span></span>
-    <span>Señal activa: <strong id="sigLabel">1</strong></span>
-    <span>Muestras: <strong id="countLabel">0</strong></span>
-    <span>Última: <strong id="tsLabel">—</strong></span>
-  </div>
-</div>
+    <canvas id="chart" width="860" height="320"></canvas>
+
+    <div class="status">
+      <span><span id="connDot" class="dot"></span><span id="connText">Desconectado</span></span>
+      <span>Senal activa: <strong id="sigLabel">1</strong></span>
+      <span>Muestras: <strong id="countLabel">0</strong></span>
+      <span>Ultima: <strong id="tsLabel">--</strong></span>
+    </div>
+  </section>
+</main>
 
 <script>
-/* ──────────────────────────────────────────────
-   Estado de la app
-   ────────────────────────────────────────────── */
-let activeSig    = 1;
-let sampleCount  = 0;
-const MAX_POINTS = 60;   // ventana de 60 segundos
+let activeSig = 1;
+let samples = [];
+let count = 0;
+const maxPoints = 60;
 
-const COLORS = {
-  1: { border: '#3fb950', bg: 'rgba(63,185,80,0.12)'  },
-  2: { border: '#d29922', bg: 'rgba(210,153,34,0.12)' },
-};
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
 
-/* ──────────────────────────────────────────────
-   Chart.js — configuración inicial
-   ────────────────────────────────────────────── */
-const ctx = document.getElementById('chart').getContext('2d');
-const chart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels:   [],
-    datasets: [{
-      label:           'Temperatura (°C)',
-      data:            [],
-      borderColor:     COLORS[1].border,
-      backgroundColor: COLORS[1].bg,
-      borderWidth:     2,
-      pointRadius:     3,
-      pointHoverRadius:5,
-      tension:         0.35,
-      fill:            true,
-    }]
-  },
-  options: {
-    responsive:          true,
-    maintainAspectRatio: false,
-    animation:           false,
-    interaction: { mode: 'index', intersect: false },
-    scales: {
-      x: {
-        ticks: { color: '#8b949e', maxTicksLimit: 10, maxRotation: 0 },
-        grid:  { color: '#21262d' },
-      },
-      y: {
-        ticks: { color: '#8b949e' },
-        grid:  { color: '#21262d' },
-        title: { display: true, text: '°C', color: '#8b949e' },
-      }
-    },
-    plugins: {
-      legend: {
-        labels: { color: '#e6edf3' }
-      },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.parsed.y} ${chart.options.scales.y.title.text}`
-        }
-      }
-    }
+function drawChart() {
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  ctx.strokeStyle = "#30363d";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = 20 + i * ((h - 40) / 4);
+    ctx.beginPath();
+    ctx.moveTo(40, y);
+    ctx.lineTo(w - 20, y);
+    ctx.stroke();
   }
-});
 
-/* ──────────────────────────────────────────────
-   Actualizar gráfico con un nuevo punto
-   ────────────────────────────────────────────── */
+  ctx.fillStyle = "#8b949e";
+  ctx.font = "12px system-ui";
+  ctx.fillText("1", 12, 26);
+  ctx.fillText("0", 12, h - 20);
+
+  if (samples.length < 2) return;
+
+  ctx.strokeStyle = activeSig === 1 ? "#3fb950" : "#d29922";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+
+  samples.forEach((p, i) => {
+    const x = 40 + i * ((w - 60) / Math.max(maxPoints - 1, 1));
+    const y = p.value ? 28 : h - 28;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.stroke();
+}
+
 function addPoint(event) {
-  const labels  = chart.data.labels;
-  const dataset = chart.data.datasets[0];
+  if (samples.length >= maxPoints) samples.shift();
+  samples.push(event);
 
-  if (labels.length >= MAX_POINTS) {
-    labels.shift();
-    dataset.data.shift();
-  }
+  document.getElementById("numDisplay").textContent = event.value;
+  document.getElementById("unitDisplay").textContent = event.unit;
+  document.getElementById("nameDisplay").textContent = event.name;
+  document.getElementById("tsLabel").textContent = event.ts;
 
-  labels.push(event.ts);
-  dataset.data.push(event.value);
-  chart.update();
+  count++;
+  document.getElementById("countLabel").textContent = count;
 
-  /* Mostrar valor actual */
-  document.getElementById('numDisplay').textContent = event.value.toFixed(
-    activeSig === 1 ? 2 : 3
-  );
-  document.getElementById('unitDisplay').textContent = event.unit;
-  document.getElementById('nameDisplay').textContent = event.name;
-  document.getElementById('tsLabel').textContent     = event.ts;
-
-  sampleCount++;
-  document.getElementById('countLabel').textContent = sampleCount;
+  drawChart();
 }
 
-/* ──────────────────────────────────────────────
-   Resetear gráfico (cambio de señal)
-   ────────────────────────────────────────────── */
-function resetChart(sig, meta) {
-  chart.data.labels             = [];
-  chart.data.datasets[0].data  = [];
-  chart.data.datasets[0].borderColor     = COLORS[sig].border;
-  chart.data.datasets[0].backgroundColor = COLORS[sig].bg;
-  chart.data.datasets[0].label          = `${meta.name} (${meta.unit})`;
-  chart.options.scales.y.title.text      = meta.unit;
-  chart.update();
+function resetView(sig, meta) {
+  activeSig = sig;
+  samples = [];
+  count = 0;
 
-  document.getElementById('numDisplay').textContent = '—';
-  document.getElementById('numDisplay').className   =
-    'number ' + (sig === 1 ? 'color-temp' : 'color-voltage');
-  document.getElementById('unitDisplay').textContent = meta.unit;
-  document.getElementById('nameDisplay').textContent = meta.name;
-  document.getElementById('sigLabel').textContent    = sig;
-  sampleCount = 0;
-  document.getElementById('countLabel').textContent  = 0;
+  document.getElementById("btn1").className = sig === 1 ? "active" : "";
+  document.getElementById("btn2").className = sig === 2 ? "active2" : "";
+  document.getElementById("sigLabel").textContent = sig;
+  document.getElementById("countLabel").textContent = "0";
+  document.getElementById("numDisplay").textContent = "--";
+  document.getElementById("numDisplay").style.color = sig === 1 ? "#3fb950" : "#d29922";
+  document.getElementById("unitDisplay").textContent = meta.unit;
+  document.getElementById("nameDisplay").textContent = meta.name;
+
+  drawChart();
 }
 
-/* ──────────────────────────────────────────────
-   Seleccionar señal (botones)
-   ────────────────────────────────────────────── */
 function selectSignal(sig) {
-  fetch(`/select/${sig}`, { method: 'POST' })
+  fetch(`/select/${sig}`, { method: "POST" })
     .then(r => r.json())
-    .then(data => {
-      activeSig = sig;
-
-      /* Botones */
-      document.getElementById('btn1').className =
-        'sig-btn' + (sig === 1 ? ' active' : '');
-      document.getElementById('btn2').className =
-        'sig-btn' + (sig === 2 ? ' active-voltage' : '');
-
-      /* Metadatos para el reset */
-      const unitMap = { 1: { name: data.name, unit: '°C' },
-                        2: { name: data.name, unit: 'V'  } };
-      resetChart(sig, unitMap[sig]);
-    })
-    .catch(err => console.error('Error al seleccionar señal:', err));
+    .then(meta => resetView(sig, meta));
 }
 
-/* ──────────────────────────────────────────────
-   Server-Sent Events
-   ────────────────────────────────────────────── */
 function connectSSE() {
-  const src = new EventSource('/stream');
+  const src = new EventSource("/stream");
 
   src.onopen = () => {
-    document.getElementById('connDot').classList.remove('off');
-    document.getElementById('connText').textContent = 'Conectado';
+    document.getElementById("connDot").classList.add("on");
+    document.getElementById("connText").textContent = "Conectado";
   };
 
   src.onmessage = e => {
     const event = JSON.parse(e.data);
-
-    /* Si el servidor cambió de señal entre conexiones, sincronizar */
     if (event.signal !== activeSig) {
-      activeSig = event.signal;
-      resetChart(activeSig, { name: event.name, unit: event.unit });
+      resetView(event.signal, event);
     }
-
     addPoint(event);
   };
 
   src.onerror = () => {
-    document.getElementById('connDot').classList.add('off');
-    document.getElementById('connText').textContent = 'Reconectando…';
+    document.getElementById("connDot").classList.remove("on");
+    document.getElementById("connText").textContent = "Reconectando";
     src.close();
     setTimeout(connectSSE, 3000);
   };
 }
 
+drawChart();
 connectSSE();
 </script>
 </body>
